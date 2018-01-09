@@ -1,0 +1,34 @@
+{
+  "name": "socket-msg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "bench": "node benchmark/bench.js",
+    "test": "tap test/*.js",
+    "test:coverage": "tap test/*.js --cov",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/trygve-lie/socket-msg.git"
+  },
+  "author": "Trygve Lie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trygve-lie/socket-msg/issues"
+  },
+  "homepage": "https://github.com/trygve-lie/socket-msg#readme",
+  "devDependencies": {
+    "eslint": "4.14.0",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.8.0",
+    "benchmark": "2.1.4",
+    "lolex": "2.3.1",
+    "tap": "11.0.1"
+  }
+}
