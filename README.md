@@ -40,3 +40,47 @@ rep.on('message', (channel, msg, res) => {
 rep.pipe(stream).pipe(rep);
 
 ```
+
+
+
+## node.js compabillity
+
+This module is written in ES6 and uses some functions only found in node.js 8.2
+and newer. This module will not function with older than 8.2 versions of node.js.
+
+
+
+## error handling
+
+This module does not handle errors for you, so you must handle errors on
+whatever streams you pipe into this module. This is a general rule when
+programming with node.js streams: always handle errors on each and every stream.
+
+We recommend using [`end-of-stream`](https://npmjs.org/end-of-stream) or [`pump`](https://npmjs.org/pump)
+for writing error tolerant stream code.
+
+
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2017 - Trygve Lie - post@trygve-lie.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
