@@ -1,7 +1,7 @@
 {
   "name": "socket-msg",
   "version": "1.0.0",
-  "description": "",
+  "description": "Socket library providing common communication patterns and transports",
   "main": "lib/socket-msg.js",
   "directories": {
     "lib": "lib"
@@ -17,6 +17,13 @@
     "type": "git",
     "url": "git+ssh://git@github.com/trygve-lie/socket-msg.git"
   },
+  "keywords": [
+    "socket",
+    "performance",
+    "distributed",
+    "pubsub",
+    "reqrep"
+  ],
   "author": "Trygve Lie",
   "license": "MIT",
   "bugs": {
