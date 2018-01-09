@@ -1,5 +1,7 @@
 # socket-msg
 
+[![Dependencies](https://img.shields.io/david/trygve-lie/socket-msg.svg?style=flat-square)](https://david-dm.org/trygve-lie/socket-msg)[![Build Status](http://img.shields.io/travis/trygve-lie/socket-msg/master.svg?style=flat-square)](https://travis-ci.org/trygve-lie/socket-msg)
+
 Possible API:
 
 PubSub
