@@ -2,7 +2,7 @@
   "name": "socket-msg",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/main.js",
+  "main": "lib/socket-msg.js",
   "directories": {
     "lib": "lib"
   },
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/trygve-lie/socket-msg#readme",
   "devDependencies": {
-    "eslint": "4.14.0",
+    "eslint": "4.15.0",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.8.0",
     "benchmark": "2.1.4",
