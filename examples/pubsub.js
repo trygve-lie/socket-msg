@@ -4,40 +4,26 @@ const SocketMsg = require('../');
 
 const smsg = new SocketMsg();
 
-// Pub server
-const pub = smsg.tcp('pub');
-pub.bind({
-    host: 'localhost',
-    port: 8124,
-});
+const pubsub = async () => {
+    const pub = smsg.tcp('pub');
+    const sub = smsg.tcp('sub');
 
-// Send messages on pub server
-setTimeout(() => {
-    pub.send('boooo');
-}, 200);
-setTimeout(() => {
-    pub.send('hoooo');
-}, 600);
+    sub.on('message', (msg) => {
+        console.log('sub msg:', msg);
+    });
 
-// Sub clients
-const subA = smsg.tcp('sub');
-subA.connect({
-    host: 'localhost',
-    port: 8124,
-});
+    const paddr = await pub.bind();
+    console.log(paddr);
 
-const subB = smsg.tcp('sub');
-subB.connect({
-    host: 'localhost',
-    port: 8124,
-});
+    const saddr = await sub.connect(paddr);
+    console.log(saddr);
 
-// Close sub clients
-setTimeout(() => {
-    subB.close();
-}, 400);
+    const pcli = pub.send('hello from publisher');
+    console.log('sent message to num clients', pcli);
 
-// Close pub server
-setTimeout(() => {
-    pub.close();
-}, 800);
+    const sdead = await sub.close();
+    const pdead = await pub.close();
+    console.log(sdead, pdead);
+};
+
+pubsub();

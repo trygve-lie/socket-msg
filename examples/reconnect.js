@@ -7,13 +7,9 @@ const address = {
     port: 8124,
 };
 
-const smsg = new SocketMsg();
-
-// Pub server
-const pub = smsg.tcp('pub');
-pub.bind(address);
 
 
+/*
 // Sub clients
 const sub = smsg.tcp('sub');
 sub.connect(address);
@@ -48,3 +44,4 @@ setTimeout(() => {
 setTimeout(() => {
     pub.close();
 }, 10000);
+*/
