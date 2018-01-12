@@ -6,19 +6,24 @@ Possible API:
 
 PubSub
 
+Publish to all connected subscribers
+
 ```js
 const smsg = new SocketMsg();
 const pub = smsg.tcp('pub');
-pub.bind(3000);
+const paddr = await pub.bind();
 pub.send('channel', 'Message');
 stream.pipe(pub);
 
 const sub = smsg.tcp('sub');
-sub.connect(3000);
+const saddr = await sub.connect(paddr);
 sub.on('message', (channel, msg) => {
 
 });
 sub.pipe(stream);
+
+const sdead = await sub.close();
+const pdead = await pub.close();
 ```
 
 Req/rep
