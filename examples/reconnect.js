@@ -1,47 +1,38 @@
 'use strict';
 
 const SocketMsg = require('../');
-
 const address = {
-    host: 'localhost',
-    port: 8124,
+    port: 7000,
 };
 
+const reconnect = async () => {
+    const smsg = new SocketMsg();
+    const pub = smsg.tcp('pub');
+    const sub = smsg.tcp('sub');
 
+    await pub.bind(address);
+    await sub.connect(address);
 
-/*
-// Sub clients
-const sub = smsg.tcp('sub');
-sub.connect(address);
+    setTimeout(async () => {
+        await pub.close();
+    }, 2000);
 
-// Close pub server
-setTimeout(() => {
-    pub.close();
-}, 1000);
+    setTimeout(async () => {
+        await pub.bind(address);
+    }, 4000);
 
-// Start pub server
-setTimeout(() => {
-    pub.bind(address);
-}, 3000);
+    setTimeout(async () => {
+        await pub.close();
+    }, 6000);
 
-// Close pub server
-setTimeout(() => {
-    pub.close();
-}, 5000);
+    setTimeout(async () => {
+        await pub.bind(address);
+    }, 8000);
 
-// Start pub server
-setTimeout(() => {
-    pub.bind(address);
-}, 7000);
+    setTimeout(async () => {
+        await sub.close();
+        await pub.close();
+    }, 10000);
+};
 
-
-// Close sub client
-setTimeout(() => {
-    sub.close();
-}, 9000);
-
-// Close pub server
-setTimeout(() => {
-    pub.close();
-}, 10000);
-*/
+reconnect();
