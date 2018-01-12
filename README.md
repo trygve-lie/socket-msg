@@ -2,21 +2,22 @@
 
 [![Dependencies](https://img.shields.io/david/trygve-lie/socket-msg.svg?style=flat-square)](https://david-dm.org/trygve-lie/socket-msg)[![Build Status](http://img.shields.io/travis/trygve-lie/socket-msg/master.svg?style=flat-square)](https://travis-ci.org/trygve-lie/socket-msg)
 
-Possible API:
+## API:
 
-PubSub
+### PubSub:
 
-Publish to all connected subscribers
+Publish to all connected subscribers.
 
 ```js
 const smsg = new SocketMsg();
+
 const pub = smsg.tcp('pub');
 const paddr = await pub.bind();
 pub.send('channel', 'Message');
 stream.pipe(pub);
 
 const sub = smsg.tcp('sub');
-const saddr = await sub.connect(paddr);
+const saddr = await sub.connect([paddr]);
 sub.on('message', (channel, msg) => {
 
 });
@@ -26,25 +27,56 @@ const sdead = await sub.close();
 const pdead = await pub.close();
 ```
 
-Req/rep
+### ReqRep:
+
+Round robin request connected repliers.
 
 ```js
-const req = smsg.tcp('req');
-req.connect(3000);
-req.send('channel', 'Message', (res) => {
-    console.log(res);
-});
-stream.pipe(req).pipe(stream);
-
 const smsg = new SocketMsg();
+
 const rep = smsg.tcp('rep');
-rep.bind(3000);
+const rpaddr = await rep.bind();
 rep.on('message', (channel, msg, res) => {
     res.send('Message');
 });
 rep.pipe(stream).pipe(rep);
 
+const req = smsg.tcp('req');
+const rqaddr = await req.connect([rpaddr]);
+const rqmsg = await req.send('channel', 'Message');
+/*
+req.send('channel', 'Message', (resMsg) => {
+    console.log(resMsg);
+});
+*/
+
+stream.pipe(req).pipe(stream);
+
+const rpdead = await rep.close();
+const rqdead = await req.close();
 ```
+
+### PushPull (pipeline):
+
+Round robin push messages to connected pullers. Both push and pull can both `.bind()` and `.connect()`:
+
+```js
+const smsg = new SocketMsg();
+
+const pull = smsg.tcp('pull');
+const pladdr = await pull.connect([psaddr]);
+pull.on('message', (channel, msg) => {
+
+});
+
+const push = smsg.tcp('push');
+const psaddr = await push.bind();
+push.send('channel', 'Message');
+
+const pldead = await pull.close();
+const prdead = await push.close();
+```
+
 
 
 
