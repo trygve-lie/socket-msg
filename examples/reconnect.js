@@ -1,6 +1,7 @@
 'use strict';
 
 const SocketMsg = require('../');
+
 const address = {
     port: 7000,
 };
