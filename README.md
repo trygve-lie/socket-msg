@@ -79,6 +79,24 @@ const prdead = await push.close();
 
 
 
+## Server events:
+
+ * `connection` - `uuid` - when remote client connects
+ * `disconnection` - `uuid` - when remote client disconnects
+ * `message` - `message`, `uuid` - message from remote client
+ * `bind` - `address` - when server binds
+ * `close` - when server closes
+ * `error` - `error` - when an error occur
+
+## Client events:
+
+ * `connection` - `uuid` - when client connects to remote server
+ * `disconnection` - `uuid` - when client disconnects from remote server
+ * `reconnect backoff` - `uuid`, `attempt`, `delay` - when client looses connection to server
+ * `reconnect failed` - `uuid` - when client reconnection attempts to server is exceeded
+ * `message` - `message`, `uuid` - message from remote server
+ * `close` - when client is force closed
+
 
 ## node.js compabillity
 
