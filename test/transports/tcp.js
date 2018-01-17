@@ -5,6 +5,12 @@ const tap = require('tap');
 const net = require('net');
 
 let PORT = 9500;
+const RECONNECT_SHORT = {
+    randomisationFactor: 0,
+    initialDelay: 2,
+    failAfter: 2,
+    maxDelay: 10,
+};
 
 /**
  * SocketMsgTcpServer - Constructor
@@ -163,6 +169,71 @@ tap.test('SocketMsgTcpServer.on("message") - receives data from client - should 
     });
 });
 
+tap.test('SocketMsgTcpServer.on("bind") - bind server - should emit bind event with server address', (t) => {
+    const server = new tcp.Server();
+    const port = PORT++;
+
+    server.on('bind', (address) => {
+        server.close();
+        t.type(address, 'object');
+        t.equal(address.port, port);
+        t.end();
+    });
+
+    server.bind({ port }, () => {});
+});
+
+tap.test('SocketMsgTcpServer.on("close") - close server - should emit close event', (t) => {
+    const server = new tcp.Server();
+    const port = PORT++;
+
+    server.on('close', () => {
+        t.ok(true);
+        t.end();
+    });
+
+    server.bind({ port }, () => {
+        server.close();
+    });
+});
+
+tap.test('SocketMsgTcpServer.on("connection") - client connects to server - should emit connection event with uuid', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client();
+    const port = PORT++;
+
+    server.on('connection', (uuid) => {
+        t.ok(uuid);
+        t.end();
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            client.close(() => {
+                server.close();
+            });
+        });
+    });
+});
+
+tap.test('SocketMsgTcpServer.on("disconnection") - client disconnects from server - should emit disconnection event with uuid', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client();
+    const port = PORT++;
+
+    server.on('disconnection', (uuid) => {
+        t.ok(uuid);
+        t.end();
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            client.close(() => {
+                server.close();
+            });
+        });
+    });
+});
 
 
 /**
@@ -272,18 +343,105 @@ tap.test('SocketMsgTcpClient.on("message") - receives data from server - should 
     const client = new tcp.Client();
     const port = PORT++;
 
-    server.bind({ port }, (error, address) => {
-        client.connect(address, () => {
-            server.broadcast(Buffer.from('foo'));
-        });
-    });
-
     client.on('message', (msg, uuid) => {
         client.close(() => {
             server.close(() => {
                 t.equal(msg.toString(), 'foo');
                 t.ok(uuid);
                 t.end();
+            });
+        });
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            server.broadcast(Buffer.from('foo'));
+        });
+    });
+});
+
+tap.test('SocketMsgTcpClient.on("connection") - connects to a server - should emit connection event with uuid', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client();
+    const port = PORT++;
+
+    client.on('connection', (uuid) => {
+        t.ok(uuid);
+        t.end();
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            client.close(() => {
+                server.close(() => {
+
+                });
+            });
+        });
+    });
+});
+
+tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should emit disconnection event with uuid', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client();
+    const port = PORT++;
+
+    client.on('disconnection', (uuid) => {
+        client.close(() => {
+            t.ok(uuid);
+            t.end();
+        });
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            server.close(() => {
+
+            });
+        });
+    });
+});
+
+tap.test('SocketMsgTcpClient.on("close") - force close connections to servers - should emit close event', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client();
+    const port = PORT++;
+
+    client.on('close', () => {
+        t.end();
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            client.close(() => {
+                server.close(() => {
+
+                });
+            });
+        });
+    });
+});
+
+tap.test('SocketMsgTcpClient.on("reconnect *") - lost connection from server - should emit reconnect backoff and reconnect failed events', (t) => {
+    const server = new tcp.Server();
+    const client = new tcp.Client(RECONNECT_SHORT);
+    const port = PORT++;
+
+    client.on('reconnect backoff', (uuid, attempt, delay) => {
+        t.ok(uuid);
+        t.type(attempt, 'number');
+        t.type(delay, 'number');
+    });
+
+    client.on('reconnect failed', (uuid) => {
+        t.ok(uuid);
+        t.end();
+    });
+
+    server.bind({ port }, (error, address) => {
+        client.connect(address, () => {
+            server.close(() => {
+
             });
         });
     });
