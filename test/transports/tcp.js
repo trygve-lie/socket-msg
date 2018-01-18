@@ -2,9 +2,9 @@
 
 const tcp = require('../../lib/transports/tcp');
 const tap = require('tap');
-const net = require('net');
 
 let PORT = 9500;
+
 const RECONNECT_SHORT = {
     randomisationFactor: 0,
     initialDelay: 2,
@@ -55,13 +55,20 @@ tap.test('SocketMsgTcpServer.bind() - bind on same port multiple times - should 
 
 tap.test('SocketMsgTcpServer.close() - close running server - should stop server', (t) => {
     const server = new tcp.Server();
+    const client = new tcp.Client();
     const port = PORT++;
+
+    client.on('error', () => {
+
+    });
 
     server.bind({ port }, (error, address) => {
         server.close(() => {
-            net.createConnection(address).on('error', (err) => {
-                t.type(err, 'object');
-                t.end();
+            client.connect(address, (err) => {
+                client.close(() => {
+                    t.type(err, 'object');
+                    t.end();
+                });
             });
         });
     });
@@ -271,6 +278,9 @@ tap.test('SocketMsgTcpClient() - custom strategy argument - should set default s
 tap.test('SocketMsgTcpClient() - connect to non running server - should call callback - first argument is an error object, second is "null"', (t) => {
     const client = new tcp.Client();
     const port = PORT++;
+    client.on('error', () => {
+
+    });
 
     client.connect({ port, host: 'localhost' }, (error, address) => {
         t.type(error, 'object');
@@ -386,6 +396,10 @@ tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should
     const client = new tcp.Client();
     const port = PORT++;
 
+    client.on('error', () => {
+
+    });
+
     client.on('disconnection', (uuid) => {
         client.close(() => {
             t.ok(uuid);
@@ -426,6 +440,10 @@ tap.test('SocketMsgTcpClient.on("reconnect *") - lost connection from server - s
     const server = new tcp.Server();
     const client = new tcp.Client(RECONNECT_SHORT);
     const port = PORT++;
+
+    client.on('error', () => {
+
+    });
 
     client.on('reconnect backoff', (uuid, attempt, delay) => {
         t.ok(uuid);

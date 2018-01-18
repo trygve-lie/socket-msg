@@ -96,6 +96,8 @@ const prdead = await push.close();
  * `reconnect failed` - `uuid` - when client reconnection attempts to server is exceeded
  * `message` - `message`, `uuid` - message from remote server
  * `close` - when client is force closed
+ * `error` - `error`, `uuid` - when an error occur
+
 
 
 ## node.js compabillity
