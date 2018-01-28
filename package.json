@@ -7,9 +7,9 @@
     "lib": "lib"
   },
   "scripts": {
-    "bench": "node benchmark/bench.js",
-    "test": "tap test/*.js test/*/*.js",
-    "test:coverage": "tap test/*.js test/*/*.js --cov",
+    "bench": "node benchmark/message.js",
+    "test": "tap --timeout=4 test/*.js test/*/*.js",
+    "test:coverage": "tap --timeout=4 test/*.js test/*/*.js --cov",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -31,13 +31,14 @@
   },
   "homepage": "https://github.com/trygve-lie/socket-msg#readme",
   "devDependencies": {
-    "eslint": "4.15.0",
+    "eslint": "4.16.0",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.8.0",
     "benchmark": "2.1.4",
     "tap": "11.0.1"
   },
   "dependencies": {
-    "backoff": "^2.5.0"
+    "backoff": "^2.5.0",
+    "framed-msg": "^2.0.0"
   }
 }

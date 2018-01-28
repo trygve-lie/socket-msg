@@ -242,6 +242,55 @@ tap.test('SocketMsgTcpServer.on("disconnection") - client disconnects from serve
     });
 });
 
+tap.test('SocketMsgTcpServer.roundrobin() - roundsobin message - should distribute message in round robin fashion', (t) => {
+    const server = new tcp.Server();
+    const clientA = new tcp.Client();
+    const clientB = new tcp.Client();
+    const port = PORT++;
+
+    const a = [];
+    const b = [];
+
+    clientA.on('message', (msg) => {
+        a.push(msg.toString());
+        if (a.length === 3) {
+            t.equal(a[0], 'a');
+            t.equal(a[1], 'c');
+            t.equal(a[2], 'e');
+        }
+    });
+
+    clientB.on('message', (msg) => {
+        b.push(msg.toString());
+        if (b.length === 3) {
+            t.equal(b[0], 'b');
+            t.equal(b[1], 'd');
+            t.equal(b[2], 'f');
+        }
+    });
+
+    server.bind({ port }, (error, address) => {
+        clientA.connect(address, () => {
+            clientB.connect(address, () => {
+                server.roundrobin('a');
+                server.roundrobin('b');
+                server.roundrobin('c');
+                server.roundrobin('d');
+                server.roundrobin('e');
+                server.roundrobin('f');
+                clientA.close(() => {
+                    clientB.close(() => {
+                        server.close(() => {
+                            t.end();
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
 
 /**
  * SocketMsgTcpClient - Constructor
