@@ -3,10 +3,6 @@
 const EventEmitter = require('events');
 
 const StrategyUtilServer = class StrategyUtilServer extends EventEmitter {
-    constructor() {
-        super();
-    }
-
     get [Symbol.toStringTag]() {
         return 'StrategyUtilServer';
     }
@@ -15,62 +11,58 @@ const StrategyUtilServer = class StrategyUtilServer extends EventEmitter {
         this.emit('bind', address);
     }
 
-    emitConnection(uuid) {
-        this.emit('connection', uuid);
+    emitConnection(address) {
+        this.emit('connection', address);
     }
 
-    emitDisconnection(uuid) {
-        this.emit('disconnection', uuid);
+    emitDisconnection(address) {
+        this.emit('disconnection', address);
     }
 
-    emitMessage(data, uuid) {
-        this.emit('message', data, uuid);
+    emitMessage(data, address) {
+        this.emit('message', data, address);
     }
 
     emitClose() {
         this.emit('close');
     }
 
-    emitError(error, uuid) {
-        this.emit('error', error, uuid);
+    emitError(error, address) {
+        this.emit('error', error, address);
     }
 };
 
 const StrategyUtilClient = class StrategyUtilClient extends EventEmitter {
-    constructor() {
-        super();
-    }
-
     get [Symbol.toStringTag]() {
         return 'StrategyUtilClient';
     }
 
-    emitConnection(uuid) {
-        this.emit('connection', uuid);
+    emitConnection(address) {
+        this.emit('connection', address);
     }
 
-    emitDisconnection(uuid) {
-        this.emit('disconnection', uuid);
+    emitDisconnection(address) {
+        this.emit('disconnection', address);
     }
 
-    emitReconnectBackoff(uuid, attempt, delay) {
-        this.emit('reconnect backoff', uuid, attempt, delay);
+    emitReconnectBackoff(attempt, delay, address) {
+        this.emit('reconnect backoff', attempt, delay, address);
     }
 
-    emitReconnectFailed(uuid) {
-        this.emit('reconnect failed', uuid);
+    emitReconnectFailed(address) {
+        this.emit('reconnect failed', address);
     }
 
-    emitMessage(data, uuid) {
-        this.emit('message', data, uuid);
+    emitMessage(data, address) {
+        this.emit('message', data, address);
     }
 
     emitClose() {
         this.emit('close');
     }
 
-    emitError(error, uuid) {
-        this.emit('error', error, uuid);
+    emitError(error, address) {
+        this.emit('error', error, address);
     }
 };
 

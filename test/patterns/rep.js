@@ -19,50 +19,49 @@ tap.test('SocketMsgRep.on("connection") - transport emits "connection" event - s
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('connection', (uuid) => {
-        t.equal(uuid, 'a');
+    rep.on('connection', () => {
+        t.ok(true);
         t.end();
     });
 
-    mock.emitConnection('a');
+    mock.emitConnection();
 });
 
 tap.test('SocketMsgRep.on("disconnection") - transport emits "disconnection" event - should emit "disconnection" event', (t) => {
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('disconnection', (uuid) => {
-        t.equal(uuid, 'b');
+    rep.on('disconnection', () => {
+        t.ok(true);
         t.end();
     });
 
-    mock.emitDisconnection('b');
+    mock.emitDisconnection();
 });
 
 tap.test('SocketMsgRep.on("reconnect backoff") - transport emits "reconnect backoff" event - should emit "reconnect backoff" event', (t) => {
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('reconnect backoff', (uuid, attempt, delay) => {
-        t.equal(uuid, 'c');
+    rep.on('reconnect backoff', (attempt, delay) => {
         t.equal(attempt, 2);
         t.equal(delay, 800);
         t.end();
     });
 
-    mock.emitReconnectBackoff('c', 2, 800);
+    mock.emitReconnectBackoff(2, 800);
 });
 
 tap.test('SocketMsgRep.on("reconnect failed") - transport emits "reconnect failed" event - should emit "reconnect failed" event', (t) => {
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('reconnect failed', (uuid) => {
-        t.equal(uuid, 'd');
+    rep.on('reconnect failed', () => {
+        t.ok(true);
         t.end();
     });
 
-    mock.emitReconnectFailed('d');
+    mock.emitReconnectFailed();
 });
 
 tap.test('SocketMsgRep.on("close") - transport emits "close" event - should emit "close" event', (t) => {
@@ -81,24 +80,23 @@ tap.test('SocketMsgRep.on("error") - transport emits "error" event - should emit
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('error', (error, uuid) => {
+    rep.on('error', (error) => {
         t.equal(error, 'foo');
-        t.equal(uuid, 'e');
+        t.ok(true);
         t.end();
     });
 
-    mock.emitError('foo', 'e');
+    mock.emitError('foo');
 });
 
 tap.test('SocketMsgRep.on("message") - transport emits "message" event - should emit "message" event', (t) => {
     const mock = new event.Client();
     const rep = new Rep(mock);
 
-    rep.on('message', (data, uuid) => {
+    rep.on('message', (data) => {
         t.equal(data, 'bar');
-        t.equal(uuid, 'f');
         t.end();
     });
 
-    mock.emitMessage('bar', 'f');
+    mock.emitMessage('bar');
 });

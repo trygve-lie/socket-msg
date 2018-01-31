@@ -19,24 +19,24 @@ tap.test('SocketMsgReq.on("connection") - transport emits "connection" event - s
     const mock = new event.Server();
     const req = new Req(mock);
 
-    req.on('connection', (uuid) => {
-        t.equal(uuid, 'a');
+    req.on('connection', () => {
+        t.ok(true);
         t.end();
     });
 
-    mock.emitConnection('a');
+    mock.emitConnection();
 });
 
 tap.test('SocketMsgReq.on("disconnection") - transport emits "disconnection" event - should emit "disconnection" event', (t) => {
     const mock = new event.Server();
     const req = new Req(mock);
 
-    req.on('disconnection', (uuid) => {
-        t.equal(uuid, 'b');
+    req.on('disconnection', () => {
+        t.ok(true);
         t.end();
     });
 
-    mock.emitDisconnection('b');
+    mock.emitDisconnection();
 });
 
 tap.test('SocketMsgReq.on("close") - transport emits "close" event - should emit "close" event', (t) => {
@@ -55,13 +55,12 @@ tap.test('SocketMsgReq.on("error") - transport emits "error" event - should emit
     const mock = new event.Server();
     const req = new Req(mock);
 
-    req.on('error', (error, uuid) => {
+    req.on('error', (error) => {
         t.equal(error, 'foo');
-        t.equal(uuid, 'e');
         t.end();
     });
 
-    mock.emitError('foo', 'e');
+    mock.emitError('foo');
 });
 
 tap.test('SocketMsgReq.on("bind") - transport emits "bind" event - should emit "bind" event', (t) => {

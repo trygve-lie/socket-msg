@@ -65,10 +65,14 @@ tap.test('SocketMsgTcpServer.close() - close running server - should stop server
     server.bind({ port }, (error, address) => {
         server.close(() => {
             client.connect(address, (err) => {
-                client.close(() => {
+                t.type(err, 'object');
+                t.end();
+                /*
+client.close(() => {
                     t.type(err, 'object');
                     t.end();
                 });
+                */
             });
         });
     });
@@ -161,7 +165,7 @@ tap.test('SocketMsgTcpServer.on("message") - receives data from client - should 
 
     server.bind({ port }, (error, address) => {
         client.connect(address, () => {
-            client.broadcast(Buffer.from('foo'));
+            client.send(Buffer.from('foo'));
         });
     });
 
@@ -363,10 +367,10 @@ tap.test('SocketMsgTcpClient() - close connection - should close connection', (t
 
     server.bind({ port }, (error, address) => {
         client.connect(address, () => {
-            t.equal(client.connections.size, 1);
+            t.false(client.socket.destroyed);
             client.close((status) => {
                 t.ok(status);
-                t.equal(client.connections.size, 0);
+                t.true(client.socket.destroyed);
                 server.close(() => {
                     t.end();
                 });
@@ -375,14 +379,14 @@ tap.test('SocketMsgTcpClient() - close connection - should close connection', (t
     });
 });
 
-tap.test('SocketMsgTcpClient.broadcast() - broadcast message - should be sent to server', (t) => {
+tap.test('SocketMsgTcpClient.send() - send message - should be sent to server', (t) => {
     const server = new tcp.Server();
     const client = new tcp.Client();
     const port = PORT++;
 
     server.bind({ port }, (error, address) => {
         client.connect(address, () => {
-            client.broadcast(Buffer.from('foo'));
+            client.send(Buffer.from('foo'));
         });
     });
 
@@ -397,16 +401,15 @@ tap.test('SocketMsgTcpClient.broadcast() - broadcast message - should be sent to
     });
 });
 
-tap.test('SocketMsgTcpClient.on("message") - receives data from server - should emit message event with message and server uuid', (t) => {
+tap.test('SocketMsgTcpClient.on("message") - receives data from server - should emit message event with message', (t) => {
     const server = new tcp.Server();
     const client = new tcp.Client();
     const port = PORT++;
 
-    client.on('message', (msg, uuid) => {
+    client.on('message', (msg) => {
         client.close(() => {
             server.close(() => {
                 t.equal(msg.toString(), 'foo');
-                t.ok(uuid);
                 t.end();
             });
         });
@@ -419,13 +422,13 @@ tap.test('SocketMsgTcpClient.on("message") - receives data from server - should 
     });
 });
 
-tap.test('SocketMsgTcpClient.on("connection") - connects to a server - should emit connection event with uuid', (t) => {
+tap.test('SocketMsgTcpClient.on("connection") - connects to a server - should emit connection event', (t) => {
     const server = new tcp.Server();
     const client = new tcp.Client();
     const port = PORT++;
 
-    client.on('connection', (uuid) => {
-        t.ok(uuid);
+    client.on('connection', () => {
+        t.ok(true);
         t.end();
     });
 
@@ -440,7 +443,7 @@ tap.test('SocketMsgTcpClient.on("connection") - connects to a server - should em
     });
 });
 
-tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should emit disconnection event with uuid', (t) => {
+tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should emit disconnection event', (t) => {
     const server = new tcp.Server();
     const client = new tcp.Client();
     const port = PORT++;
@@ -449,9 +452,9 @@ tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should
 
     });
 
-    client.on('disconnection', (uuid) => {
+    client.on('disconnection', () => {
         client.close(() => {
-            t.ok(uuid);
+            t.ok(true);
             t.end();
         });
     });
@@ -494,14 +497,13 @@ tap.test('SocketMsgTcpClient.on("reconnect *") - lost connection from server - s
 
     });
 
-    client.on('reconnect backoff', (uuid, attempt, delay) => {
-        t.ok(uuid);
+    client.on('reconnect backoff', (attempt, delay) => {
         t.type(attempt, 'number');
         t.type(delay, 'number');
     });
 
-    client.on('reconnect failed', (uuid) => {
-        t.ok(uuid);
+    client.on('reconnect failed', () => {
+        t.ok(true);
         t.end();
     });
 

@@ -15,19 +15,19 @@ const reconnect = async () => {
         // console.log(error);
     });
 
-    sub.on('reconnect backoff', (uuid, attempt, delay) => {
+    sub.on('reconnect backoff', (attempt, delay) => {
         console.log(`Waiting ${delay}ms to do reconnect attempt ${attempt + 1}`);
     });
 
-    sub.on('reconnect failed', (uuid) => {
+    sub.on('reconnect failed', () => {
         console.log('Reconnect failed');
     });
 
-    sub.on('connection', (uuid) => {
+    sub.on('connection', () => {
         console.log('Got connection');
     });
 
-    sub.on('disconnection', (uuid) => {
+    sub.on('disconnection', () => {
         console.log('Lost connection');
     });
 

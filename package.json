@@ -1,6 +1,6 @@
 {
   "name": "socket-msg",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "Socket library providing common communication patterns and transports",
   "main": "lib/socket-msg.js",
   "directories": {
@@ -35,10 +35,10 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.8.0",
     "benchmark": "2.1.4",
-    "tap": "11.0.1"
+    "tap": "11.1.0"
   },
   "dependencies": {
     "backoff": "^2.5.0",
-    "framed-msg": "^2.0.0"
+    "framed-msg": "^2.2.0"
   }
 }
