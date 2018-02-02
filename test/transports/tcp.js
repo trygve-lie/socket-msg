@@ -67,12 +67,6 @@ tap.test('SocketMsgTcpServer.close() - close running server - should stop server
             client.connect(address, (err) => {
                 t.type(err, 'object');
                 t.end();
-                /*
-client.close(() => {
-                    t.type(err, 'object');
-                    t.end();
-                });
-                */
             });
         });
     });
@@ -443,7 +437,7 @@ tap.test('SocketMsgTcpClient.on("connection") - connects to a server - should em
     });
 });
 
-tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should emit disconnection event', (t) => {
+tap.test('SocketMsgTcpClient.on("disconnection") - disconnect by server - should emit disconnection event', (t) => {
     const server = new tcp.Server();
     const client = new tcp.Client();
     const port = PORT++;
@@ -453,8 +447,8 @@ tap.test('SocketMsgTcpClient.on("disconnection") - connects to a server - should
     });
 
     client.on('disconnection', () => {
+        t.ok(true);
         client.close(() => {
-            t.ok(true);
             t.end();
         });
     });
