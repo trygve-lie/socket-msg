@@ -380,15 +380,17 @@ tap.test('SocketMsgTcpClient.send() - send message - should be sent to server', 
 
     server.bind({ port }, (error, address) => {
         client.connect(address, () => {
-            client.send(Buffer.from('foo'));
+            client.send(Buffer.from('foo'), 'bar', 'xyz');
         });
     });
 
-    server.on('message', (msg, uuid) => {
+    server.on('message', (msg, uuid, channel, trackId) => {
         client.close(() => {
             server.close(() => {
                 t.equal(msg.toString(), 'foo');
                 t.ok(uuid);
+                t.equal(channel.toString(), 'bar');
+                t.equal(trackId.toString(), 'xyz');
                 t.end();
             });
         });
@@ -400,10 +402,12 @@ tap.test('SocketMsgTcpClient.on("message") - receives data from server - should 
     const client = new tcp.Client();
     const port = PORT++;
 
-    client.on('message', (msg) => {
+    client.on('message', (msg, channel, trackId) => {
         client.close(() => {
             server.close(() => {
                 t.equal(msg.toString(), 'foo');
+                t.equal(channel.toString(), 'bar');
+                t.equal(trackId.toString(), 'xyz');
                 t.end();
             });
         });
@@ -411,7 +415,7 @@ tap.test('SocketMsgTcpClient.on("message") - receives data from server - should 
 
     server.bind({ port }, (error, address) => {
         client.connect(address, () => {
-            server.broadcast(Buffer.from('foo'));
+            server.broadcast(Buffer.from('foo'), 'bar', 'xyz');
         });
     });
 });
